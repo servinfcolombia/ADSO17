@@ -1,0 +1,1 @@
+Email, Nombres, apellidos, Telefono, No activan o despliegan el teclado como si lo hace el campo password.
