@@ -1,0 +1,1 @@
+ D:\\felipe.rodriguez\\Formacion\\Flutter\\ADSO17\\app_dividido_registro\\.dart_tool\\flutter_build\\57c138222aae7e1d33650659ce4428ab\\native_assets.json: 

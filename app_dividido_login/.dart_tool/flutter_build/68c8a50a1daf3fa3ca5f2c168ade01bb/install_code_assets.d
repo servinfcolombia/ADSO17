@@ -1,0 +1,1 @@
+ D:\\felipe.rodriguez\\Formacion\\Flutter\\ADSO17\\app_adso\\.dart_tool\\flutter_build\\68c8a50a1daf3fa3ca5f2c168ade01bb\\native_assets.json: 
