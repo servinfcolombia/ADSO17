@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/delete_user_screen.dart';
-import 'screens/user_list_screen.dart'; // Añade esta importación
+import 'screens/user_list_screen.dart';
+import 'screens/update_user_screen.dart'; // Añade esta importación
 
 void main() {
   runApp(MyApp());
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/register': (context) => RegisterScreen(),
         '/delete_user': (context) => DeleteUserScreen(),
-        '/user_list': (context) => UserListScreen(), // Añade esta ruta
+        '/user_list': (context) => UserListScreen(),
+        '/update_user': (context) => UpdateUserScreen(), // Añade esta ruta
       },
     );
   }

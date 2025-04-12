@@ -99,4 +99,33 @@ class ApiService {
       throw Exception('Error en la solicitud: $e');
     }
   }
+
+  // Mostrar todos los actualizar usuario
+  static Future<Map<String, dynamic>> updateUser(
+    String currentEmail,
+    String newEmail,
+    String newPassword,
+  ) async {
+    final Uri url = Uri.parse('$baseUrl/update_user');
+
+    try {
+      final response = await http.put(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'current_email': currentEmail,
+          'new_email': newEmail,
+          'new_password': newPassword,
+        }),
+      );
+
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      responseData['statusCode'] = response.statusCode;
+      return responseData;
+    } catch (e) {
+      throw Exception('Error en la solicitud: $e');
+    }
+  }
 }

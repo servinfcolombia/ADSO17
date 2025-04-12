@@ -1,5 +1,6 @@
 import 'package:app_dividido_registro/screens/delete_user_screen.dart';
 import 'package:app_dividido_registro/screens/register_screen.dart';
+import 'package:app_dividido_registro/screens/update_user_screen.dart';
 import 'package:app_dividido_registro/screens/user_list_screen.dart';
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
@@ -122,6 +123,18 @@ class _LoginFormState extends State<LoginForm> {
             );
           },
           child: Text('Ver todos los usuarios'),
+        ),
+
+        // Añade este widget al final de la columna en el método build
+        SizedBox(height: 10),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UpdateUserScreen()),
+            );
+          },
+          child: Text('Actualizar usuario'),
         ),
       ],
     );
