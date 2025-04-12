@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 
-class RegisterForm extends StatefulWidget {
+class DeleteUserForm extends StatefulWidget {
   @override
-  _RegisterFormState createState() => _RegisterFormState();
+  _DeleteUserFormState createState() => _DeleteUserFormState();
 }
 
-class _RegisterFormState extends State<RegisterForm> {
+class _DeleteUserFormState extends State<DeleteUserForm> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  Future<void> _register() async {
+  Future<void> _deleteUser() async {
     final String email = _emailController.text;
-    final String password = _passwordController.text;
 
-    if (email.isEmpty || password.isEmpty) {
-      _showErrorDialog(context, 'Por favor complete todos los campos');
+    if (email.isEmpty) {
+      _showErrorDialog(context, 'Por favor ingrese un email');
       return;
     }
 
@@ -25,13 +23,11 @@ class _RegisterFormState extends State<RegisterForm> {
     });
 
     try {
-      final response = await ApiService.register(email, password);
+      final response = await ApiService.deleteUser(email);
 
       if (response['statusCode'] == 200) {
-        _showSuccessDialog(
-          context,
-          'Usuario registrado: ${response['user']['email']}',
-        );
+        _showSuccessDialog(context, response['message']);
+        _emailController.clear();
       } else {
         _showErrorDialog(context, response['detail'] ?? 'Error desconocido');
       }
@@ -49,7 +45,7 @@ class _RegisterFormState extends State<RegisterForm> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text('Registro exitoso'),
+            title: Text('Usuario eliminado'),
             content: Text(message),
             actions: [
               TextButton(
@@ -84,18 +80,19 @@ class _RegisterFormState extends State<RegisterForm> {
       children: [
         TextField(
           controller: _emailController,
-          decoration: InputDecoration(labelText: 'Email'),
+          decoration: InputDecoration(labelText: 'Email a eliminar'),
           keyboardType: TextInputType.emailAddress,
-        ),
-        TextField(
-          controller: _passwordController,
-          decoration: InputDecoration(labelText: 'Password'),
-          obscureText: true,
         ),
         SizedBox(height: 20),
         _isLoading
             ? CircularProgressIndicator()
-            : ElevatedButton(onPressed: _register, child: Text('Registrarse')),
+            : ElevatedButton(
+              onPressed: _deleteUser,
+              child: Text('Eliminar Usuario'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red, // Color rojo para indicar peligro
+              ),
+            ),
       ],
     );
   }

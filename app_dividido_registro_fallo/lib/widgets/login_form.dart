@@ -1,6 +1,8 @@
+import 'package:app_dividido_registro/screens/delete_user_screen.dart';
+import 'package:app_dividido_registro/screens/register_screen.dart';
+import 'package:app_dividido_registro/screens/user_list_screen.dart';
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
-import '../screens/register_screen.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -8,33 +10,32 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
-  bool _obscurePassword = true;
 
   Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) return;
+    final String email = _emailController.text;
+    final String password = _passwordController.text;
 
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
-      final response = await ApiService.login(
-        _emailController.text,
-        _passwordController.text,
-      );
+      final response = await ApiService.login(email, password);
 
       if (response['statusCode'] == 200) {
         _showSuccessDialog(context, 'Bienvenido: ${response['user']['email']}');
       } else {
-        _showErrorDialog(context, response['detail'] ?? 'Error desconocido');
+        _showErrorDialog(context, response['detail']);
       }
     } catch (e) {
       _showErrorDialog(context, 'No se pudo conectar al servidor. Error: $e');
     } finally {
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -74,119 +75,55 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Imagen de Flutter
-            Image.asset(
-              'assets/icon_flutter/icon_flutter_dk-blue.png',
-              height: 120,
-              width: 120,
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Iniciar Sesión',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-
-            // Formulario
-            Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Campo de email
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email),
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor ingrese un email';
-                      }
-                      if (!RegExp(
-                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                      ).hasMatch(value)) {
-                        return 'Ingrese un email válido';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
-
-                  // Campo de contraseña
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      labelText: 'Contraseña',
-                      prefixIcon: Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
-                        },
-                      ),
-                      border: OutlineInputBorder(),
-                    ),
-                    obscureText: _obscurePassword,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor ingrese una contraseña';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 24),
-
-                  // Botón de login
-                  _isLoading
-                      ? Center(child: CircularProgressIndicator())
-                      : ElevatedButton(
-                        onPressed: _login,
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Text(
-                          'INICIAR SESIÓN',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                  SizedBox(height: 16),
-
-                  // Botón de registro
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RegisterScreen(),
-                        ),
-                      );
-                    },
-                    child: Text('¿No tienes cuenta? Regístrate'),
-                  ),
-                ],
-              ),
-            ),
-          ],
+    return Column(
+      children: [
+        TextField(
+          controller: _emailController,
+          decoration: InputDecoration(labelText: 'Email'),
         ),
-      ),
+        TextField(
+          controller: _passwordController,
+          decoration: InputDecoration(labelText: 'Password'),
+          obscureText: true,
+        ),
+        SizedBox(height: 20),
+        _isLoading
+            ? CircularProgressIndicator()
+            : ElevatedButton(onPressed: _login, child: Text('Login')),
+        // Añade este widget al final de la columna en el método build
+        SizedBox(height: 10),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterScreen()),
+            );
+          },
+          child: Text('¿No tienes cuenta? Regístrate'),
+        ),
+        // Añade este widget al final de la columna en el método build
+        SizedBox(height: 10),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DeleteUserScreen()),
+            );
+          },
+          child: Text('Eliminar usuario', style: TextStyle(color: Colors.red)),
+        ),
+        // Añade este widget al final de la columna en el método build
+        SizedBox(height: 10),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UserListScreen()),
+            );
+          },
+          child: Text('Ver todos los usuarios'),
+        ),
+      ],
     );
   }
 }

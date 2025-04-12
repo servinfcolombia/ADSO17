@@ -2,42 +2,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.60.81:8000';
+  static const String baseUrl = 'http://10.10.31.147:8000';
 
-  // Registrar credenciales de login
-  static Future<Map<String, dynamic>> registerLoginCredentials({
-    required String email,
-    required String password,
-  }) async {
-    final Uri url = Uri.parse('$baseUrl/register-login');
-
-    try {
-      final response = await http.post(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode({'email': email, 'password': password}),
-      );
-
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-
-      if (response.statusCode != 200) {
-        throw Exception(responseData['detail'] ?? 'Unknown error occurred');
-      }
-
-      return {'statusCode': response.statusCode, 'data': responseData};
-    } catch (e) {
-      throw Exception('Failed to register credentials: ${e.toString()}');
-    }
-  }
-
-  // Verificar credenciales de login
-  static Future<Map<String, dynamic>> verifyLoginCredentials({
-    required String email,
-    required String password,
-  }) async {
-    final Uri url = Uri.parse('$baseUrl/verify-login');
+  // Validacion de login
+  // Esta función se encarga de enviar una solicitud POST al servidor para iniciar sesión.
+  static Future<Map<String, dynamic>> login(
+    String email,
+    String password,
+  ) async {
+    final Uri url = Uri.parse('$baseUrl/login');
 
     try {
       final response = await http.post(
@@ -45,20 +18,85 @@ class ApiService {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'email': email, 'password': password}),
+        body: jsonEncode(<String, String>{
+          'email': email,
+          'password': password,
+        }),
       );
 
       final Map<String, dynamic> responseData = jsonDecode(response.body);
-
-      if (response.statusCode != 200) {
-        throw Exception(responseData['detail'] ?? 'Invalid credentials');
-      }
-
-      return {'statusCode': response.statusCode, 'data': responseData};
+      responseData['statusCode'] = response.statusCode;
+      return responseData;
     } catch (e) {
-      throw Exception('Login verification failed: ${e.toString()}');
+      throw Exception('Error en la solicitud: $e');
     }
   }
 
-  static login(String email, String password) {}
+  // Registrar usuario
+  static Future<Map<String, dynamic>> register(
+    String email,
+    String password,
+  ) async {
+    final Uri url = Uri.parse('$baseUrl/register');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      // Check if the response is successful (status code 200)
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      responseData['statusCode'] = response.statusCode;
+      return responseData;
+    } catch (e) {
+      throw Exception('Error en la solicitud: $e');
+    }
+  }
+
+  // Eliminar usuario
+  static Future<Map<String, dynamic>> deleteUser(String email) async {
+    final Uri url = Uri.parse('$baseUrl/delete_user/$email');
+
+    try {
+      final response = await http.delete(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      responseData['statusCode'] = response.statusCode;
+      return responseData;
+    } catch (e) {
+      throw Exception('Error en la solicitud: $e');
+    }
+  }
+
+  // Mostrar todos los usuarios
+  static Future<Map<String, dynamic>> getUsers() async {
+    final Uri url = Uri.parse('$baseUrl/users');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      responseData['statusCode'] = response.statusCode;
+      return responseData;
+    } catch (e) {
+      throw Exception('Error en la solicitud: $e');
+    }
+  }
 }
