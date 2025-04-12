@@ -1,6 +1,6 @@
+import 'package:app_dividido/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
-import '../screens/register_screen.dart'; // Asegúrate de importar RegisterScreen
 
 class LoginForm extends StatefulWidget {
   @override
@@ -87,20 +87,18 @@ class _LoginFormState extends State<LoginForm> {
         SizedBox(height: 20),
         _isLoading
             ? CircularProgressIndicator()
-            : Column(
-              children: [
-                ElevatedButton(onPressed: _login, child: Text('Login')),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegisterScreen()),
-                    );
-                  },
-                  child: Text('¿No tienes cuenta? Regístrate'),
-                ),
-              ],
-            ),
+            : ElevatedButton(onPressed: _login, child: Text('Login')),
+        // Añade este widget al final de la columna en el método build
+        SizedBox(height: 10),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterScreen()),
+            );
+          },
+          child: Text('¿No tienes cuenta? Regístrate'),
+        ),
       ],
     );
   }

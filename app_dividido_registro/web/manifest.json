@@ -1,6 +1,6 @@
 {
-    "name": "app_dividido_registro",
-    "short_name": "app_dividido_registro",
+    "name": "app_dividido",
+    "short_name": "app_dividido",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
